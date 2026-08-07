@@ -35,8 +35,10 @@ object WebVttParser {
         val cues = mutableListOf<SubtitleCue>()
         var i = 0
 
-        // Skip header and empty lines
-        while (i < lines.size && !CUE_TIMING_PATTERN.matches(lines[i])) {
+        // Skip header and metadata until the first cue timing line. A timing line may contain
+        // WebVTT cue settings after the end timestamp, so it does not necessarily fully match
+        // the timestamp-only pattern.
+        while (i < lines.size && CUE_TIMING_PATTERN.find(lines[i]) == null) {
             i++
         }
 
